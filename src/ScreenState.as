@@ -14,14 +14,42 @@ package
 			super.create();
 			
 			FlxG.flash(0xff000000, 1.0);
-			
-			add(new Galaxy(12, 12));
-			add(new World());
 		}
 		
 		override public function update():void
 		{	
 			super.update();
 		}
+		
+		public function onButtonMenu():void
+		{
+			fadeToMenu();
+		}
+		
+		public function fadeToMenu(Timer:FlxTimer = null):void
+		{
+			FlxG.fade(0xff000000, 0.5, goToMenu);
+		}
+		
+		public function goToMenu():void
+		{
+			FlxG.switchState(new MenuScreen);
+		}
+		
+		public function onButtonGame():void
+		{
+			fadeToGame();
+		}
+		
+		public function fadeToGame(Timer:FlxTimer = null):void
+		{
+			FlxG.fade(0xff000000, 0.5, goToGame);
+		}
+		
+		public function goToGame():void
+		{
+			FlxG.switchState(new GameScreen);
+		}
+
 	}
 }

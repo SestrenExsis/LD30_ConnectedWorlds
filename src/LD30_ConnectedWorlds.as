@@ -7,7 +7,7 @@ package
 	{
 		public function LD30_ConnectedWorlds()
 		{
-			super(640, 360, null, 1.0, 60, 60, true);
+			super(320, 180, ScreenState, 2.0, 60, 60, true);
 			forceDebugger = true;
 		}
 	}

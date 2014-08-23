@@ -5,49 +5,55 @@ package
 	public class World extends Entity
 	{
 		public var galaxy:Galaxy;
+		public var queue:int;
 		
-		public function World(GalaxyInstance:Galaxy, Size:int = 3)
+		public function World(GalaxyInstance:Galaxy, Size:int = 3, Queue:int = 0)
 		{
-			super(FlxG.mouse.x, FlxG.mouse.y);
+			super(FlxG.mouse.x, FlxG.mouse.y, Size, Size);
 			
 			galaxy = GalaxyInstance;
-			
+			queue = Queue;
 			randomWorld(Size);
 		}
 		
-		private function placeInGalaxy(StartX:int, StartY:int):void
+		private function placeInGalaxy(StartX:int, StartY:int, CommitChange:Boolean = false):void
 		{
 			var _endX:int = StartX + widthInTiles;
 			var _endY:int = StartY + heightInTiles;
 			if (StartX < 0 || StartY < 0 || _endX > galaxy.widthInTiles || _endY > galaxy.heightInTiles)
-			{
-				FlxG.log("Out of bounds");
 				return;
-			}
-			var worldIndex:int;
-			var galaxyIndex:int;
-			for (var y:int = 0; y < widthInTiles; y++)
+			
+			var worldTile:Tile;
+			var galaxyTile:Tile;
+			var x:int;
+			var y:int;
+			for (y = 0; y < widthInTiles; y++)
 			{
-				for (var x:int = 0; x < heightInTiles; x++)
+				for (x = 0; x < heightInTiles; x++)
 				{
-					worldIndex = y * widthInTiles + x;
-					if (grid[worldIndex] > NONE)
+					worldTile = getTileAt(x, y);
+					if (worldTile.type > Tile.NONE)
 					{
-						galaxyIndex = (y + StartY) * galaxy.widthInTiles + (x + StartX);
-						galaxy.grid[galaxyIndex] = grid[worldIndex];
+						galaxyTile = galaxy.getTileAt(x + StartX, y + StartY);
+						if (galaxyTile.type > Tile.NONE)
+							worldTile.targetElevation = Tile.SPACER_HEIGHT;
+						else
+							worldTile.targetElevation = 0;
+						worldTile.combineTiles(galaxyTile, CommitChange);
 					}
 				}
 			}
-			
-			randomWorld();
+			if (CommitChange)
+			{
+				FlxG.shake(0.005, 0.125);
+				randomWorld();
+			}
 		}
 		
 		override public function update():void
 		{	
-			super.update();
-			
-			var _width:Number = tileWidth + spacerWidth;
-			var _height:Number = tileHeight + spacerHeight;
+			var _width:Number = Tile.TILE_WIDTH + 2 * Tile.SPACER_WIDTH;
+			var _height:Number = Tile.TILE_HEIGHT + 2 * Tile.SPACER_WIDTH;
 			
 			var _cornerX:Number = FlxG.mouse.x - 0.5 * (widthInTiles * _width);
 			var _cornerY:Number = FlxG.mouse.y - 0.5 * (heightInTiles * _height);
@@ -56,8 +62,9 @@ package
 			posX = _gridOffsetX * _width + galaxy.posX + 1;
 			posY = _gridOffsetY * _height + galaxy.posY - 1;
 			
-			if (FlxG.mouse.justPressed())
-				placeInGalaxy(_gridOffsetX, _gridOffsetY);
+			super.update();
+			
+			placeInGalaxy(_gridOffsetX, _gridOffsetY, FlxG.mouse.justPressed());
 		}
 		
 		override public function draw():void

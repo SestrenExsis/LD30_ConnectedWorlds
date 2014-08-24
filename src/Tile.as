@@ -17,13 +17,21 @@ package
 		public static const ROCK:int = 5;
 		
 		public static const values:Array = [0, 10, 0, 60, 40, 20];
-		public static const FREE_PLAY:Array = [WATER, WATER, WATER, WATER, EARTH, EARTH, ROCK, ROCK, FOLIAGE, MAGMA];
-		public static const STAGE_1:Array = [WATER, WATER, WATER, WATER, EARTH, EARTH, EARTH, EARTH, FOLIAGE, FOLIAGE];
-		public static const STAGE_2:Array = [WATER, WATER, WATER, WATER, EARTH, EARTH, ROCK, ROCK, FOLIAGE, FOLIAGE];
-		public static const STAGE_3:Array = [WATER, WATER, WATER, WATER, EARTH, EARTH, ROCK, ROCK, FOLIAGE, MAGMA];
-		public static const STAGE_4:Array = [WATER, WATER, WATER, WATER, EARTH, EARTH, ROCK, ROCK, MAGMA, MAGMA];
-		public static const STAGE_5:Array = [WATER, WATER, WATER, WATER, ROCK, ROCK, ROCK, MAGMA, MAGMA, MAGMA];
+		public static const FREE_PLAY:Array = [MAGMA, WATER, WATER, WATER, WATER, WATER, ROCK, ROCK, EARTH, FOLIAGE];
+		public static const STAGE_1:Array =   [WATER, WATER, WATER, WATER, EARTH, EARTH, EARTH, EARTH, FOLIAGE, FOLIAGE];
+		public static const STAGE_2:Array =   [WATER, WATER, WATER, WATER, WATER, ROCK, ROCK, ROCK, EARTH, FOLIAGE];
+		public static const STAGE_3:Array =   [MAGMA, WATER, WATER, WATER, WATER, WATER, ROCK, ROCK, EARTH, FOLIAGE];
+		public static const STAGE_4:Array =   [MAGMA, WATER, WATER, WATER, WATER, WATER, ROCK, ROCK, EARTH, EARTH];
+		public static const STAGE_5:Array =   [MAGMA, WATER, WATER, WATER, WATER, WATER, ROCK, ROCK, ROCK, ROCK];
+		
 		public static const tileBags:Array = [FREE_PLAY, STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5];
+		//Averages:  M + W + R +  E +  F = avg * tiles = avg value per world
+		//
+		//STAGE_1:   0 + 4 + 0 + 16 + 12 = 32 * 12 = 384 per world
+		//STAGE_2:   0 + 5 + 6 +  4 +  6 = 21 * 12 = 252 per world
+		//STAGE_3:   0 + 5 + 4 +  4 +  6 = 19 * 12 = 228 per world
+		//STAGE_4:   0 + 5 + 4 +  8 +  0 = 17 * 12 = 204 per world
+		//STAGE_5:   0 + 5 + 8 +  0 +  0 = 13 * 12 = 156 per world
 		
 		public static const TILE_WIDTH:int = 32;
 		public static const TILE_HEIGHT:int = 32;

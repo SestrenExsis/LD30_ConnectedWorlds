@@ -63,7 +63,10 @@ package
 			var _endX:int = StartX + widthInTiles;
 			var _endY:int = StartY + heightInTiles;
 			if (StartX < 0 || StartY < 0 || _endX > galaxy.widthInTiles || _endY > galaxy.heightInTiles)
+			{
+				ScreenState.playSound(ScreenState.SFX_INVALID_PLACEMENT);
 				return;
+			}
 			
 			var worldTile:Tile;
 			var galaxyTile:Tile;
@@ -97,6 +100,8 @@ package
 			next.posX = FlxG.width;
 			next.posY = Tile.SPACER_WIDTH;
 			next.repositionTiles = true;
+			
+			ScreenState.playSound(ScreenState.SFX_PLACE_PLANET);
 			
 			if (FlxG.score <= 0)
 				GameScreen.gameOver();
@@ -169,14 +174,17 @@ package
 			
 			FlxG.score -= 250;
 			FlxG.shake(0.015, 0.25);
+			ScreenState.playSound(ScreenState.SFX_HARVEST_PLANET);
 			if (FlxG.level == 1 && allGreen)
 			{
 				GameScreen.newLevel();
 			}
-			else if (FlxG.level > 0 && FlxG.score >= 1000)
+			else if (FlxG.level > 1 && FlxG.score >= 1000)
 			{
 				GameScreen.newLevel();
 			}
+			else if (FlxG.score <= 0)
+				GameScreen.gameOver();
 		}
 		
 		public function clone(TargetWorld:World):void

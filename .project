@@ -16,6 +16,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>[source path] bfxrSrc</name>
+			<type>2</type>
+			<location>C:/Users/Joshua/Desktop/Dropbox/Libraries/bfxrSrc</location>
+		</link>
+		<link>
 			<name>[source path] flixel-v2.56</name>
 			<type>2</type>
 			<location>C:/Users/Joshua/Desktop/Dropbox/Libraries/flixel-v2.56</location>

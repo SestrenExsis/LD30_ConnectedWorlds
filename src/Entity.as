@@ -4,8 +4,6 @@ package
 		
 	public class Entity extends FlxGroup
 	{
-		//public static const PLANET_EARTH:Array = [WATER, FOLIAGE, FOLIAGE, FOLIAGE, WATER, FOLIAGE, WATER, WATER, WATER];
-		
 		public var posX:Number;
 		public var posY:Number;
 		public var repositionTiles:Boolean;

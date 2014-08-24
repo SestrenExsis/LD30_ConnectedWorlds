@@ -6,13 +6,18 @@ package
 	{
 		[Embed(source="../assets/images/Background.png")] public var imgBackground:Class;
 		
+		public static const SFX_PLACE_PLANET:Array = [0, 1, 2, 3];
+		public static const SFX_INVALID_PLACEMENT:Array = [4, 5, 6];
+		public static const SFX_HARVEST_PLANET:Array = [7, 8, 9];
+		public static const SFX_MENU_SELECT:Array = [10, 11];
+		
 		public static var instance:ScreenState;
+		public static var soundBank:SoundBank;
+		public static var gameWon:Boolean = false;
+		public static var gameLost:Boolean = false;
 		
 		private var background1:FlxSprite;
 		private var background2:FlxSprite;
-		
-		public static var gameWon:Boolean = false;
-		public static var gameLost:Boolean = false;
 		
 		public function ScreenState()
 		{
@@ -34,6 +39,8 @@ package
 			add(background2);
 			
 			FlxG.flash(0xff000000, 1.0);
+			
+			soundBank = new SoundBank();
 		}
 		
 		override public function update():void
@@ -49,6 +56,13 @@ package
 		{
 			
 			super.draw();
+		}
+		
+		public static function playSound(Sounds:Array):void
+		{
+			var _seed:int = Math.floor(Sounds.length * Math.random());
+			var _index:int = Sounds[_seed];
+			soundBank.playSound(_index);
 		}
 		
 		public static function onButtonMenu():void
@@ -68,6 +82,8 @@ package
 		
 		public static function onButtonGame():void
 		{
+			if (FlxG.level == 1)
+				playSound(SFX_MENU_SELECT);
 			fadeToGame();
 		}
 		

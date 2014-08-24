@@ -62,14 +62,14 @@ package
 		{
 			FlxG.level++;
 			if (FlxG.level > 5)
-				onButtonMenu();
+				onButtonWinGame();
 			else
 				onButtonGame();
 		}
 		
 		public static function gameOver():void
 		{
-			onButtonMenu();
+			onButtonLoseGame();
 		}
 	}
 }

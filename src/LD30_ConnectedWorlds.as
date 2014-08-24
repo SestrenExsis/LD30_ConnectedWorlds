@@ -8,7 +8,6 @@ package
 		public function LD30_ConnectedWorlds()
 		{
 			super(640, 640, MenuScreen, 1.0, 60, 30, true);
-			forceDebugger = true;
 		}
 	}
 

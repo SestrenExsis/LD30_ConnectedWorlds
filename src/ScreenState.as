@@ -20,7 +20,7 @@ package
 			
 			background1 = new FlxSprite(0, 0);
 			background1.loadGraphic(imgBackground);
-			background1.velocity.x = -50;
+			background1.velocity.x = -15;
 			add(background1);
 			
 			background2 = new FlxSprite(FlxG.width, 0);

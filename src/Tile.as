@@ -16,15 +16,22 @@ package
 		public static const EARTH:int = 4;
 		public static const ROCK:int = 5;
 		
-		public static const values:Array = [0, 1, 0, 3, 1, 0];
-		public static const colors:Array = [0x00000000, 0xff00ffff, 0xffff0000, 0xff00a651, 0xffffd800, 0xff7d4900];
-		public static const PLANET_EARTH:Array = [WATER, FOLIAGE, FOLIAGE, FOLIAGE, WATER, FOLIAGE, WATER, WATER, WATER];
+		public static const values:Array = [0, 1, 0, 6, 4, 2];
+		public static const FREE_PLAY:Array = [WATER, WATER, WATER, WATER, EARTH, EARTH, ROCK, ROCK, FOLIAGE, MAGMA];
+		public static const STAGE_1:Array = [WATER, WATER, WATER, WATER, EARTH, EARTH, EARTH, EARTH, FOLIAGE, FOLIAGE];
+		public static const STAGE_2:Array = [WATER, WATER, WATER, WATER, EARTH, EARTH, ROCK, ROCK, FOLIAGE, FOLIAGE];
+		public static const STAGE_3:Array = [WATER, WATER, WATER, WATER, EARTH, EARTH, ROCK, ROCK, FOLIAGE, MAGMA];
+		public static const STAGE_4:Array = [WATER, WATER, WATER, WATER, EARTH, EARTH, ROCK, ROCK, MAGMA, MAGMA];
+		public static const STAGE_5:Array = [WATER, WATER, WATER, WATER, ROCK, ROCK, ROCK, MAGMA, MAGMA, MAGMA];
+		public static const tileBags:Array = [FREE_PLAY, STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5];
 		
 		public static const TILE_WIDTH:int = 32;
 		public static const TILE_HEIGHT:int = 32;
 		public static const TILE_BORDER:int = 4;
 		public static const SPACER_WIDTH:int = 2;
 		public static const SPACER_HEIGHT:int = 2;
+		
+		public static var currentTileBag:int = 0;
 		
 		private var entity:Entity;
 		private var tileX:int;
@@ -96,7 +103,10 @@ package
 		
 		public function randomizeType():void
 		{
-			type = Math.ceil(FlxG.random() * NUM_OF_TYPES);
+			currentTileBag = 5;
+			var _tileBag:Array = tileBags[currentTileBag];
+			var _seed:int = Math.floor(FlxG.random() * _tileBag.length);
+			type = _tileBag[_seed];
 			newType = type;
 			visible = true;
 		}

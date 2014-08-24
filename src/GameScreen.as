@@ -4,6 +4,9 @@ package
 		
 	public class GameScreen extends ScreenState
 	{
+		[Embed(source="../assets/images/Interface.png")] public var imgInterface:Class;
+		
+		private var gameInterface:FlxSprite;
 		private var galaxy:Galaxy;
 		private var world:World;
 		private var next:World;
@@ -16,6 +19,10 @@ package
 		override public function create():void
 		{
 			super.create();
+			
+			gameInterface = new FlxSprite(0, 0);
+			gameInterface.loadGraphic(imgInterface);
+			add(gameInterface);
 			
 			World.queue = 0;
 			

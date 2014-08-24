@@ -208,8 +208,8 @@ package
 			}
 			else
 			{
-				posX = FlxG.width - widthInTiles * (Tile.TILE_WIDTH + 2 * Tile.SPACER_WIDTH);
-				posY = Tile.SPACER_HEIGHT;
+				posX = FlxG.width - Tile.SPACER_WIDTH * 3.5 - widthInTiles * (Tile.TILE_WIDTH + 2 * Tile.SPACER_WIDTH);
+				posY = 5 * Tile.SPACER_HEIGHT;
 			}
 			
 			if (next)

@@ -8,8 +8,11 @@ package
 		
 		public var posX:Number;
 		public var posY:Number;
+		public var repositionTiles:Boolean;
 		public var widthInTiles:int;
 		public var heightInTiles:int;
+		public var harvest:Boolean;
+		public var tileCounts:Array;
 		
 		public function Entity(PosX:Number, PosY:Number, WidthInTiles:int = 1, HeightInTiles:int = 1)
 		{
@@ -18,6 +21,8 @@ package
 			posY = PosY;
 			widthInTiles = WidthInTiles;
 			heightInTiles = HeightInTiles;
+			repositionTiles = false;
+			tileCounts = new Array(Tile.NUM_OF_TYPES);
 			
 			var i:int;
 			for (var y:int = 0; y < heightInTiles; y++)
@@ -38,30 +43,13 @@ package
 		
 		public function emptyGrid():void
 		{
-			for (var i:int = 0; i < widthInTiles * heightInTiles; i++)
-			{
-				members[i].type = Tile.NONE;
-			}
-		}
-		
-		public function randomWorld(Size:int = -1):void
-		{
-			if (Size > 0)
-				widthInTiles = Size;
-			else
-				Size = widthInTiles;
-			if (Size > 0)
-				heightInTiles = Size;
-			
 			var _cornerClipping:int = 0;
-			if (Size == 4 || Size == 5)
+			if (widthInTiles == 4 || widthInTiles == 5)
 				_cornerClipping = 1;
-			else if (Size == 6 || Size == 7 || Size == 8)
+			else if (widthInTiles == 6 || widthInTiles == 7 || widthInTiles == 8)
 				_cornerClipping = 2;
 			else
 				_cornerClipping = 0;
-			
-			members = new Array(widthInTiles * heightInTiles);
 			
 			var i:int;
 			for (var y:int = 0; y < heightInTiles; y++)
@@ -69,11 +57,9 @@ package
 				for (var x:int = 0; x < widthInTiles; x++)
 				{
 					i = y * widthInTiles + x;
-					members[i] = new Tile(this, x, y);
+					members[i].type = Tile.NONE;
 					if (manhattanDistance(x, y, widthInTiles, heightInTiles) < _cornerClipping)
-						members[i].type = Tile.NONE;
-					else
-						members[i].randomizeType();
+						members[i].visible = false;
 				}
 			}
 		}

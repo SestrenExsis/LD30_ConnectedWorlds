@@ -28,7 +28,7 @@ package
 			_flashRect.x = posX - 8;
 			_flashRect.y = posY - 8;
 			_flashRect.width = (Tile.TILE_WIDTH + 2 * Tile.SPACER_WIDTH) * widthInTiles + 14;
-			_flashRect.height = (Tile.TILE_HEIGHT + 2 * Tile.SPACER_HEIGHT) * heightInTiles + 14;
+			_flashRect.height = (Tile.TILE_HEIGHT + 2 * Tile.SPACER_HEIGHT + Tile.TILE_BORDER) * heightInTiles + 14;
 			FlxG.camera.buffer.fillRect(_flashRect, 0xffffffff);
 			
 			_flashRect.x += 4;

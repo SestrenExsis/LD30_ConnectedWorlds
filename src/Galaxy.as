@@ -2,6 +2,7 @@ package
 {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	
 	import org.flixel.*;
 		
 	public class Galaxy extends Entity
@@ -9,7 +10,7 @@ package
 		private var _flashRect:Rectangle;
 		private var _flashPoint:Point;
 		
-		public function Galaxy(GalaxyWidth:int = 1, GalaxyHeight:int = 1, PlanetSize:int = 1)
+		public function Galaxy(GalaxyWidth:int = 1, GalaxyHeight:int = 1)
 		{
 			super(12, 12, GalaxyWidth, GalaxyHeight);
 			

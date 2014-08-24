@@ -37,6 +37,9 @@ package
 		
 		public function getTileAt(TileX:int, TileY:int):Tile
 		{
+			if (TileX < 0 || TileY < 0 || TileX >= widthInTiles || TileY >= heightInTiles)
+				return null;
+			
 			var i:int = TileY * widthInTiles + TileX;
 			return members[i];
 		}

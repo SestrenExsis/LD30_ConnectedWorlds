@@ -6,8 +6,13 @@ package
 	{
 		[Embed(source="../assets/images/Background.png")] public var imgBackground:Class;
 		
+		public static var instance:ScreenState;
+		
 		private var background1:FlxSprite;
 		private var background2:FlxSprite;
+		
+		public static var gameWon:Boolean = false;
+		public static var gameLost:Boolean = false;
 		
 		public function ScreenState()
 		{
@@ -17,6 +22,7 @@ package
 		override public function create():void
 		{
 			super.create();
+			instance = this;
 			
 			background1 = new FlxSprite(0, 0);
 			background1.loadGraphic(imgBackground);
@@ -45,34 +51,84 @@ package
 			super.draw();
 		}
 		
-		public function onButtonMenu():void
+		public static function onButtonMenu():void
 		{
 			fadeToMenu();
 		}
 		
-		public function fadeToMenu(Timer:FlxTimer = null):void
+		public static function fadeToMenu(Timer:FlxTimer = null):void
 		{
 			FlxG.fade(0xff000000, 0.5, goToMenu);
 		}
 		
-		public function goToMenu():void
+		public static function goToMenu():void
 		{
 			FlxG.switchState(new MenuScreen);
 		}
 		
-		public function onButtonGame():void
+		public static function onButtonGame():void
 		{
 			fadeToGame();
 		}
 		
-		public function fadeToGame(Timer:FlxTimer = null):void
+		public static function fadeToGame(Timer:FlxTimer = null):void
 		{
 			FlxG.fade(0xff000000, 0.5, goToGame);
 		}
 		
-		public function goToGame():void
+		public static function goToGame():void
 		{
 			FlxG.switchState(new GameScreen);
+		}
+		
+		public static function onButtonFreePlay():void
+		{
+			fadeToFreePlay();
+		}
+		
+		public static function fadeToFreePlay(Timer:FlxTimer = null):void
+		{
+			FlxG.fade(0xff000000, 0.5, goToFreePlay);
+		}
+		
+		public static function goToFreePlay():void
+		{
+			FlxG.level = 0;
+			FlxG.switchState(new GameScreen);
+		}
+		
+		public static function onButtonWinGame():void
+		{
+			fadeToWinGame();
+		}
+		
+		public static function fadeToWinGame(Timer:FlxTimer = null):void
+		{
+			FlxG.fade(0xff000000, 0.5, goToWinGame);
+		}
+		
+		public static function goToWinGame():void
+		{
+			gameLost = false;
+			gameWon = true;
+			FlxG.switchState(new MenuScreen);
+		}
+		
+		public static function onButtonLoseGame():void
+		{
+			fadeToLoseGame();
+		}
+		
+		public static function fadeToLoseGame(Timer:FlxTimer = null):void
+		{
+			FlxG.fade(0xff000000, 0.5, goToLoseGame);
+		}
+		
+		public static function goToLoseGame():void
+		{
+			gameLost = true;
+			gameWon = false;
+			FlxG.switchState(new MenuScreen);
 		}
 
 	}

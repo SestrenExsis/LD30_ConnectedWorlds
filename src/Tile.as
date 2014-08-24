@@ -16,7 +16,7 @@ package
 		public static const EARTH:int = 4;
 		public static const ROCK:int = 5;
 		
-		public static const values:Array = [0, 1, 0, 6, 4, 2];
+		public static const values:Array = [0, 10, 0, 60, 40, 20];
 		public static const FREE_PLAY:Array = [WATER, WATER, WATER, WATER, EARTH, EARTH, ROCK, ROCK, FOLIAGE, MAGMA];
 		public static const STAGE_1:Array = [WATER, WATER, WATER, WATER, EARTH, EARTH, EARTH, EARTH, FOLIAGE, FOLIAGE];
 		public static const STAGE_2:Array = [WATER, WATER, WATER, WATER, EARTH, EARTH, ROCK, ROCK, FOLIAGE, FOLIAGE];
@@ -30,8 +30,6 @@ package
 		public static const TILE_BORDER:int = 4;
 		public static const SPACER_WIDTH:int = 2;
 		public static const SPACER_HEIGHT:int = 2;
-		
-		public static var currentTileBag:int = 0;
 		
 		private var entity:Entity;
 		private var tileX:int;
@@ -103,8 +101,7 @@ package
 		
 		public function randomizeType():void
 		{
-			currentTileBag = 5;
-			var _tileBag:Array = tileBags[currentTileBag];
+			var _tileBag:Array = tileBags[FlxG.level];
 			var _seed:int = Math.floor(FlxG.random() * _tileBag.length);
 			type = _tileBag[_seed];
 			newType = type;
@@ -113,10 +110,12 @@ package
 		
 		public function combineTiles(TileToCombineWith:Tile = null, CommitChange:Boolean = false):int
 		{
+			var _combinedTile:int = type;
 			if (TileToCombineWith == null)
+			{
+				newType = _combinedTile;
 				return type;
-			
-			var _combinedTile:int;
+			}
 			
 			var _bottomType:int = TileToCombineWith.type;
 			if (type == MAGMA || _bottomType == MAGMA)
@@ -186,17 +185,19 @@ package
 		
 		override public function draw():void
 		{	
-			var y:Number = posY;
-			posY = posY - elevation;
-			super.draw();
-			posY = y;
-			
 			if (entity.harvest)
 			{
 				_flashRect.setTo(posX + 8, posY + 8, frameWidth - 16, frameHeight - 20);
 				FlxG.camera.buffer.fillRect(_flashRect, 0xffffffff);
+				_flashRect.setTo(0, 0, frameWidth, frameHeight);
 			}
-			_flashRect.setTo(0, 0, frameWidth, frameHeight);
+			else
+			{
+				var y:Number = posY;
+				posY = posY - elevation;
+				super.draw();
+				posY = y;
+			}
 		}
 		
 		private function updateTargets(Mass:Number, Stiffness:Number, Damping:Number):void

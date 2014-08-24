@@ -1,17 +1,14 @@
 package
 {
 	import flash.utils.ByteArray;
-	
 	import org.flixel.*;
 	
 	public class World extends Entity
 	{
-		public static var queue:int = 0;
-		public static var harvests:int = 0;
-		
 		public var galaxy:Galaxy;
 		public var next:World;
 		public var score:int;
+		public var allGreen:Boolean;
 		
 		public function World(GalaxyInstance:Galaxy, Size:int = 3, Preview:World = null)
 		{
@@ -20,27 +17,18 @@ package
 			galaxy = GalaxyInstance;
 			next = Preview;
 			harvest = false;
+			allGreen = false;
 			randomWorld(Size);
 		}
 		
 		public function randomWorld(Size:int = -1):void
 		{
-			queue++;
 			if (Size > 0)
 				widthInTiles = Size;
 			else
 				Size = widthInTiles;
 			if (Size > 0)
 				heightInTiles = Size;
-			
-			if (World.queue >= (World.harvests + 1) * 4 && FlxG.random() > 0.2)
-			{
-				World.harvests++;
-				harvest = true;
-				emptyGrid();
-				return;
-			}
-			harvest = false;
 			
 			var _cornerClipping:int = 0;
 			if (Size == 4 || Size == 5)
@@ -70,7 +58,7 @@ package
 			}
 		}
 		
-		private function placeWorld(StartX:int, StartY:int, CommitChange:Boolean = false):void
+		private function placeWorld(StartX:int, StartY:int):void
 		{
 			var _endX:int = StartX + widthInTiles;
 			var _endY:int = StartY + heightInTiles;
@@ -93,85 +81,101 @@ package
 							worldTile.targetElevation = Tile.TILE_BORDER;
 						else
 							worldTile.targetElevation = 0;
-						worldTile.combineTiles(galaxyTile, CommitChange);
+						worldTile.combineTiles(galaxyTile, true);
 					}
 				}
 			}
-			if (CommitChange)
-			{
-				FlxG.shake(0.005, 0.125);
-				clone(next);
-				posX = next.posX;
-				posY = next.posY;
-				repositionTiles = true;
-				
-				next.randomWorld();
-				next.posX = FlxG.width;
-				next.posY = Tile.SPACER_WIDTH;
-				next.repositionTiles = true;
-			}
+			
+			FlxG.score -= 5;
+			FlxG.shake(0.005, 0.125);
+			clone(next);
+			posX = next.posX;
+			posY = next.posY;
+			repositionTiles = true;
+			
+			next.randomWorld();
+			next.posX = FlxG.width;
+			next.posY = Tile.SPACER_WIDTH;
+			next.repositionTiles = true;
+			
+			if (FlxG.score <= 0)
+				GameScreen.gameOver();
 		}
 		
-		private function harvestWorld(StartX:int, StartY:int, CommitChange:Boolean = false):void
+		private function isLegalHarvest(StartX:int, StartY:int):Boolean
 		{
 			var _endX:int = StartX + widthInTiles;
 			var _endY:int = StartY + heightInTiles;
-			if (StartX < 0 || StartY < 0 || _endX > galaxy.widthInTiles || _endY > galaxy.heightInTiles)
-				return;
 			
 			var worldTile:Tile;
 			var galaxyTile:Tile;
-			var x:int;
-			var y:int;
-			var illegalMove:Boolean = false;
-			for (y = 0; y < widthInTiles; y++)
+			var legalMove:Boolean = true;
+			for (var y:int = 0; y < widthInTiles; y++)
 			{
-				for (x = 0; x < heightInTiles; x++)
+				for (var x:int = 0; x < heightInTiles; x++)
 				{
 					worldTile = getTileAt(x, y);
-					if (worldTile.visible)
+					galaxyTile = galaxy.getTileAt(x + StartX, y + StartY);
+					
+					if (galaxyTile)
 					{
-						galaxyTile = galaxy.getTileAt(x + StartX, y + StartY);
-						if (galaxyTile.type == Tile.NONE)
-							illegalMove = true;
-					}
-				}
-			}
-			
-			if (illegalMove)
-				return;
-			
-			score = 0;
-			for (y = 0; y < widthInTiles; y++)
-			{
-				for (x = 0; x < heightInTiles; x++)
-				{
-					worldTile = getTileAt(x, y);
-					if (worldTile.visible)
-					{
-						galaxyTile = galaxy.getTileAt(x + StartX, y + StartY);
-						if (CommitChange)
+						if (worldTile.type > Tile.NONE)
 						{
-							score += galaxyTile.score;
-							galaxyTile.type = Tile.NONE;
+							if (galaxyTile.type > Tile.NONE)
+								worldTile.targetElevation = Tile.TILE_BORDER;
+							else
+								worldTile.targetElevation = 0;
+							worldTile.combineTiles(galaxyTile, false);
+						}
+						
+						if (worldTile.visible)
+						{
+							if (galaxyTile.type == Tile.NONE)
+								legalMove = false;
 						}
 					}
+					else
+					{
+						worldTile.targetElevation = 0;
+						worldTile.combineTiles(null, false);
+						legalMove = false;
+					}
+				}
+			}
+			return legalMove;
+		}
+		
+		private function commitHarvest(StartX:int, StartY:int):void
+		{
+			score = 0;
+			var worldTile:Tile;
+			var galaxyTile:Tile;
+			allGreen = true;
+			for (var y:int = 0; y < widthInTiles; y++)
+			{
+				for (var x:int = 0; x < heightInTiles; x++)
+				{
+					worldTile = getTileAt(x, y);
+					if (worldTile.visible)
+					{
+						galaxyTile = galaxy.getTileAt(x + StartX, y + StartY);
+						FlxG.score += galaxyTile.score;
+						if (galaxyTile.type != Tile.FOLIAGE)
+							allGreen = false;
+						galaxyTile.type = Tile.NONE;
+					}
 				}
 			}
 			
-			if (CommitChange)
+			FlxG.score -= 250;
+			FlxG.shake(0.015, 0.25);
+			if (FlxG.level == 1 && allGreen)
 			{
-				FlxG.log(score);
-				FlxG.shake(0.015, 0.25);
-				clone(next);
-				posX = next.posX;
-				posY = next.posY;
-				repositionTiles = true;
-				
-				next.randomWorld();
-				next.posX = FlxG.width;
-				next.posY = Tile.SPACER_WIDTH;
-				next.repositionTiles = true;
+				GameScreen.newLevel();
+			}
+			else if (FlxG.level > 0 && FlxG.score >= 1000)
+			{
+				GameScreen.newLevel();
 			}
 		}
 		
@@ -214,10 +218,14 @@ package
 			
 			if (next)
 			{
-				if (harvest)
-					harvestWorld(_gridOffsetX, _gridOffsetY, FlxG.mouse.justPressed());
-				else
-					placeWorld(_gridOffsetX, _gridOffsetY, FlxG.mouse.justPressed());
+				harvest = isLegalHarvest(_gridOffsetX, _gridOffsetY);
+				if (FlxG.mouse.justPressed())
+				{
+					if (harvest)
+						commitHarvest(_gridOffsetX, _gridOffsetY);
+					else
+						placeWorld(_gridOffsetX, _gridOffsetY);
+				}
 			}
 			
 			super.update();

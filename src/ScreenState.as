@@ -4,7 +4,15 @@ package
 		
 	public class ScreenState extends FlxState
 	{
-		[Embed(source="../assets/images/Background.png")] public var imgBackground:Class;
+		[Embed(source="../assets/images/Background.png")] public static var imgBackground:Class;
+		[Embed(source="../assets/sounds/Drone01.mp3")] public static var sfxDrone01:Class;
+		[Embed(source="../assets/sounds/Drone02.mp3")] public static var sfxDrone02:Class;
+		[Embed(source="../assets/sounds/Drone03.mp3")] public static var sfxDrone03:Class;
+		[Embed(source="../assets/sounds/Drone04.mp3")] public static var sfxDrone04:Class;
+		[Embed(source="../assets/sounds/Drone05.mp3")] public static var sfxDrone05:Class;
+		[Embed(source="../assets/sounds/Drone06.mp3")] public static var sfxDrone06:Class;
+		[Embed(source="../assets/sounds/Drone07.mp3")] public static var sfxDrone07:Class;
+		public static var sfxDrone:Array = [sfxDrone01, sfxDrone02, sfxDrone03, sfxDrone04, sfxDrone05, sfxDrone06, sfxDrone07];
 		
 		public static const SFX_PLACE_PLANET:Array = [0, 1, 2, 3];
 		public static const SFX_INVALID_PLACEMENT:Array = [4, 5, 6];
@@ -18,6 +26,8 @@ package
 		
 		private var background1:FlxSprite;
 		private var background2:FlxSprite;
+		
+		private var timer:FlxTimer;
 		
 		public function ScreenState()
 		{
@@ -41,6 +51,9 @@ package
 			FlxG.flash(0xff000000, 1.0);
 			
 			soundBank = new SoundBank();
+			
+			timer = new FlxTimer();
+			timer.start(2 + Math.floor(FlxG.random() * 4), 1, onTimerDrone);
 		}
 		
 		override public function update():void
@@ -58,12 +71,26 @@ package
 			super.draw();
 		}
 		
+		public function onTimerDrone(Timer:FlxTimer):void
+		{
+			timer.stop();
+			timer.start(16 + 4 * Math.floor(FlxG.random() * 4), 1, onTimerDrone);
+			playDrone(0.25);
+		}
+		
 		public static function playSound(Sounds:Array):void
 		{
 			var _seed:int = Math.floor(Sounds.length * Math.random());
 			var _index:int = Sounds[_seed];
 			soundBank.playSound(_index);
 		}
+		
+		public static function playDrone(VolumeMultiplier:Number = 1.0):void
+		{
+			var _seed:Number = Math.floor(sfxDrone.length * Math.random());
+			FlxG.play(sfxDrone[_seed], VolumeMultiplier, false, false);
+		}
+
 		
 		public static function onButtonMenu():void
 		{
